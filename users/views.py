@@ -6,6 +6,8 @@ from rest_framework.response import Response
 from django.contrib.auth import login, get_user_model
 from rest_framework.permissions import AllowAny
 
+User = get_user_model()
+
 
 class UserSignupView(CreateAPIView):
     serializer_class = UserDetailSerializer
@@ -24,8 +26,9 @@ class UserLoginView(APIView):
 
 
 class UserDetailView(RetrieveUpdateDestroyAPIView):
+    queryset = User.objects.all()
     serializer_class = UserDetailSerializer
 
     def get_object(self):
         # 현재 로그인한 사용자만 자신의 정보를 조회, 수정, 삭제할 수 있도록 설정
-        return get_object_or_404(get_user_model(), id=self.request.user.id)
+        return get_object_or_404(User, id=self.request.user.id)
